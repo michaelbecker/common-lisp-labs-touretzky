@@ -218,6 +218,8 @@
 (defun choose-best-move (board)
   (or (make-three-in-a-row board)
       (block-player-win board)
+      (block-squeeze-play board)
+      (block-two-on-one board)
       (random-move-strategy board)))
 
 
@@ -255,12 +257,50 @@
            (list pos "Block squeeze play"))
           (t nil))))
 
+;;; Test setup:
+;;; -----------
 ;;; (setf b (make-board))
 ;;; (make-move *player* 1 b)
 ;;; (make-move *computer* 5 b)
 ;;; (make-move *player* 9 b)
 ;;; (print-board b)
 ;;; (block-squeeze-play b)
+
+(defun two-on-one-p (board)
+  (cond ((and (equal (nth 1 board) *player*)
+              (equal (nth 5 board) *player*)
+              (equal (nth 9 board) *computer*))
+         t)
+        ((and (equal (nth 1 board) *computer*)
+              (equal (nth 5 board) *player*)
+              (equal (nth 9 board) *player*))
+         t)
+        ((and (equal (nth 3 board) *computer*)
+              (equal (nth 5 board) *player*)
+              (equal (nth 7 board) *player*))
+         t)
+        ((and (equal (nth 3 board) *player*)
+              (equal (nth 5 board) *player*)
+              (equal (nth 7 board) *computer*))
+         t)
+        (t nil)))
+
+(defun block-two-on-one (board)
+  (let ((pos (find-empty-position board *corners*)))
+    (cond ((null pos) nil)
+          ((two-on-one-p board)
+           (list pos "Block two on one"))
+          (t nil))))
+
+;;; Test setup:
+;;; -----------
+;;; (setf b (make-board))
+;;; (make-move *player* 1 b)
+;;; (make-move *computer* 9 b)
+;;; (make-move *player* 5 b)
+;;; (print-board b)
+;;; (block-two-on-one b)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
