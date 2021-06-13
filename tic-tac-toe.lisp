@@ -1,13 +1,15 @@
 ;;; Starting point from pg 316 onwards
 ;;; (load "tic-tac-toe.lisp")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;; Player := 1  internally
 ;;;          "O" on board
 ;;;
 ;;; Computer := 10  internally
 ;;;            "X"  on board
 ;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setf *computer* 10)
 (setf *player* 1)
 
@@ -141,8 +143,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Xxx-move are the actual game state machines that 
-;;; drive game play.
+;;; xxx-move are the actual game state machines that 
+;;; drive game play. These recursively call each other,
+;;; which for a game that could take an indeterminate
+;;; amout of moves would be a problem, but here it's ok.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun player-move (board)
@@ -172,7 +176,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Computer strategies lie here.
+;;; Computer strategies here.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun random-move-strategy (board)
@@ -213,14 +217,6 @@
   (let ((pos (win-or-block board (* 2 *player*))))
     (and pos
          (list pos "block player"))))
-
-
-(defun choose-best-move (board)
-  (or (make-three-in-a-row board)
-      (block-player-win board)
-      (block-squeeze-play board)
-      (block-two-on-one board)
-      (random-move-strategy board)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -301,6 +297,14 @@
 ;;; (print-board b)
 ;;; (block-two-on-one b)
 
+
+(defun choose-best-move (board)
+  "Order the strategies that the computer considers."
+  (or (make-three-in-a-row board)
+      (block-player-win board)
+      (block-squeeze-play board)
+      (block-two-on-one board)
+      (random-move-strategy board)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
